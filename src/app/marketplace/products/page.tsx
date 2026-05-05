@@ -2,342 +2,362 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 const products = [
-  { id: 1, name: "Customized Metal Stamping Part, Steel with Zinc Plated", price: "US$ 0.39 - 0.65", unit: "Piece", category: "UAV Components", img: "/manufacturing.png" },
-  { id: 2, name: "High-quality Super Capacitor, Up to 1,000C Discharge Current", price: "US$ 0.05 - 0.50", unit: "Piece", category: "Power Systems", img: "/power.png" },
-  { id: 3, name: "Bulk Pushbutton Switch Assortment for Industrial Application", price: "US$ 3.00", unit: "Piece", category: "Sensors", img: "/sensors.png" },
-  { id: 4, name: "Industrial high precision electrical connecting parts", price: "US$ 2.00", unit: "Piece", category: "UAV Components", img: "/manufacturing.png" },
-  { id: 5, name: "Wholesale RG59 + Power Coaxial Cable CCTV/Satellite Use", price: "US$ 168.00", unit: "Kilometer", category: "GIS & GNSS", img: "/gis.png" },
-  { id: 6, name: "VTOL Carbon Fiber Airframe for Fixed Wing Drones", price: "US$ 850.00", unit: "Unit", category: "UAV Components", img: "/hero.png" },
+  { 
+    id: 1, 
+    name: "AI Calling", 
+    company: "RUDRAVEGA AI LABS PRIVATE LIMITED", 
+    added: "11 Mar 2026", 
+    description: "AI Calling by RUDRAVEGA AI LABS PRIVATE LIMITED is a state-of-the-art solution that leverages artificial intelligence to handle complex voice interactions.",
+    rating: 4.9,
+    location: "India",
+    features: ["FEATURE 1", "FEATURE 2"],
+    category: "Artificial Intelligence Solutions", 
+    img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=800" 
+  },
+  { 
+    id: 2, 
+    name: "AI Software Development", 
+    company: "RUDRAVEGA AI LABS PRIVATE LIMITED", 
+    added: "11 Mar 2026", 
+    description: "AI Software Development by RUDRAVEGA AI LABS PRIVATE LIMITED offers customized solutions for enterprise-grade autonomous systems.",
+    rating: 4.7,
+    location: "India",
+    features: ["FEATURE 1", "FEATURE 2"],
+    category: "Artificial Intelligence Solutions", 
+    img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800" 
+  },
+  { 
+    id: 3, 
+    name: "AI for Database", 
+    company: "RUDRAVEGA AI LABS PRIVATE LIMITED", 
+    added: "11 Mar 2026", 
+    description: "AI for Database provided by RUDRAVEGA AI LABS PRIVATE LIMITED revolutionizes data management with predictive indexing and query optimization.",
+    rating: 4.8,
+    location: "India",
+    features: ["FEATURE 1", "FEATURE 2"],
+    category: "Artificial Intelligence Solutions", 
+    img: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?auto=format&fit=crop&q=80&w=800" 
+  },
+  { 
+    id: 4, 
+    name: "Industrial high precision electrical connecting parts", 
+    company: "TECH CONNECT SOLUTIONS", 
+    added: "10 Mar 2026", 
+    description: "High-grade electrical connectors designed for industrial UAV systems and extreme environmental conditions.",
+    rating: 4.6,
+    location: "Germany",
+    features: ["IP67", "MIL-SPEC"],
+    category: "UAV Components", 
+    img: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800" 
+  },
+  { 
+    id: 5, 
+    name: "VTOL Carbon Fiber Airframe for Fixed Wing Drones", 
+    company: "AERO DYNAMICS LTD", 
+    added: "09 Mar 2026", 
+    description: "Lightweight, high-strength carbon fiber airframe optimized for long-range surveillance and mapping missions.",
+    rating: 4.9,
+    location: "USA",
+    features: ["LIGHTWEIGHT", "DURABLE"],
+    category: "UAV Components", 
+    img: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&q=80&w=800" 
+  },
+  { 
+    id: 6, 
+    name: "4K Thermal Camera Sensor", 
+    company: "VISION TECH SYSTEMS", 
+    added: "08 Mar 2026", 
+    description: "High-resolution thermal imaging sensor with integrated AI object detection for search and rescue operations.",
+    rating: 4.8,
+    location: "Japan",
+    features: ["4K RES", "AI DETECT"],
+    category: "Sensors", 
+    img: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&q=80&w=800" 
+  },
 ];
 
-const categories = ["All Products", "UAV Components", "Power Systems", "Sensors", "GIS & GNSS", "AI Solutions", "Flight Controllers"];
+const categories = ["All Products", "UAV Components", "Power Systems", "Sensors", "GIS & GNSS", "Artificial Intelligence Solutions"];
 
 export default function ProductsPage() {
-  const [filter, setFilter] = useState("All Products");
+  return (
+    <React.Suspense fallback={<div style={{ padding: '100px', textAlign: 'center', color: '#000' }}>Loading products...</div>}>
+      <ProductsContent />
+    </React.Suspense>
+  );
+}
 
-  const filteredProducts = filter === "All Products"
-    ? products
-    : products.filter(p => p.category === filter);
+function ProductsContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [filter, setFilter] = useState("All Products");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+
+  React.useEffect(() => {
+    const q = searchParams.get('q');
+    if (q !== null) setSearchQuery(q);
+  }, [searchParams]);
+
+  const filteredProducts = products.filter(p => {
+    const matchesCategory = filter === "All Products" || p.category === filter;
+    const matchesQuery = !searchQuery || 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesQuery;
+  });
 
   return (
     <div className="launchpad-page animate-fade">
-      {/* Launchpad Hero Section */}
-      <section className="launchpad-hero">
-        <div className="layout-container hero-inner">
-          <div className="hero-text-box">
-            <h1 className="hero-title">NEW PRODUCT LAUNCHPAD</h1>
-            <p className="hero-subtitle">Explore the hottest releases in the past two weeks</p>
+      <section className="catalog-hero">
+        <div className="layout-container">
+          <div className="hero-content">
+            <h1>Products Catalog</h1>
+            <p>Explore advanced drones, sensors, and accessories for professionals.</p>
+            <div className="title-underline"></div>
           </div>
-          <div className="hero-graphic">
-            <div className="calendar-box">
-              <div className="calendar-header">
-                <div className="dots"><span></span><span></span><span></span></div>
+          
+          <div className="filter-bar">
+            <div className="search-box">
+              <input 
+                type="text" 
+                placeholder="Search products..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </div>
+            
+            <div className="dropdowns-row">
+              <div className="filter-select">
+                <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                  {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                </select>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
               </div>
-              <div className="calendar-body">
-                <span className="new-tag">NEW</span>
+              
+              <div className="filter-select">
+                <select defaultValue="Newest">
+                  <option value="Newest">Sort by Newest</option>
+                  <option value="PriceLow">Price: Low to High</option>
+                  <option value="PriceHigh">Price: High to Low</option>
+                  <option value="Rating">Top Rated</option>
+                </select>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
               </div>
             </div>
-            <div className="glow-effect"></div>
           </div>
         </div>
       </section>
 
-      {/* Tab Navigation */}
-      <div className="tabs-container">
-        <div className="layout-container">
-          <div className="tabs-wrapper">
-            <button className="scroll-btn prev">‹</button>
-            <div className="tabs-scroll">
-              {categories.map(cat => (
-                <button
-                  key={cat}
-                  className={`tab-item ${filter === cat ? 'active' : ''}`}
-                  onClick={() => setFilter(cat)}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-            <button className="scroll-btn next">›</button>
-          </div>
+      <section className="results-header layout-container">
+        <div className="results-info">
+          <h2>All Products ({filteredProducts.length})</h2>
+          <span className="page-count">Page 1 of {Math.max(1, Math.ceil(filteredProducts.length / 12))}</span>
         </div>
-      </div>
+      </section>
+
 
       {/* Product Grid Section */}
-      <section className="launchpad-content layout-container">
-        <div className="launchpad-grid">
-          {filteredProducts.map(product => (
-            <Link href={`/marketplace/products/${product.id}`} key={product.id} className="launch-card">
-              <div className="card-img-box">
-                <img src={product.img} alt={product.name} />
+      <section className="launchpad-content">
+        <div className="layout-container">
+          <div className="launchpad-grid">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map(product => (
+                <Link href={`/marketplace/products/${product.id}`} key={product.id} className="launch-card">
+                  <div className="card-img-box">
+                    <img src={product.img} alt={product.name} />
+                    <div className="cat-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                      {product.category}
+                    </div>
+                  </div>
+                  <div className="card-info">
+                    <h3 className="card-name">{product.name}</h3>
+                    <div className="company-row">
+                      <span className="company-icon">🏢</span>
+                      <span className="company-name">{product.company}</span>
+                    </div>
+                    <div className="added-row">Added: {product.added}</div>
+                    <p className="card-description">{product.description}</p>
+                    
+                    <div className="card-footer">
+                      <div className="rating-loc">
+                        <span className="rating">⭐ {product.rating}</span>
+                        <span className="location">📍 {product.location}</span>
+                      </div>
+                      <div className="feature-tags">
+                        {product.features.map(f => <span key={f} className="tag">{f}</span>)}
+                        <span className="tag-more">+2</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="no-products-found">
+                <h3>No products found</h3>
+                <p>Try adjusting your search or filter criteria.</p>
               </div>
-              <div className="card-info">
-                <h3 className="card-name">{product.name}</h3>
-                <div className="card-price-row">
-                  <span className="card-price">{product.price}</span>
-                  <span className="card-unit">/ {product.unit}</span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+            )}
+          </div>
 
-        <div className="bottom-nav">
-          <Link href="/" className="back-link-bottom">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
-            Return to Home Portal
-          </Link>
+          <div className="bottom-nav">
+            <Link href="/" className="back-link-bottom">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M19 12H5M12 19l-7-7 7-7" /></svg>
+              Return to Home Portal
+            </Link>
+          </div>
         </div>
       </section>
 
       <style jsx>{`
         .launchpad-page {
-          background: #f4f6f9;
+          background: #fbc819;
           min-height: 100vh;
-          padding-bottom: 80px;
+        }
+
+        .catalog-hero {
+          background: linear-gradient(to bottom, #fbc819 0%, #fddc69 100%);
+          padding: 30px 0 20px;
+          text-align: center;
+        }
+
+        .hero-content h1 {
+          font-size: 2.2rem;
+          font-weight: 900;
+          color: #000;
+          margin-bottom: 8px;
+          letter-spacing: -1px;
+        }
+
+        .hero-content p {
+          font-size: 0.95rem;
           color: #333;
+          font-weight: 500;
+          margin-bottom: 15px;
         }
 
-        .launchpad-hero {
-          background: linear-gradient(135deg, #fff5e6 0%, #fffbf0 50%, #ffffff 100%);
-          padding: 80px 0;
-          position: relative;
-          overflow: hidden;
-          border-bottom: 1px solid #eee;
+        .title-underline {
+          width: 60px;
+          height: 3px;
+          background: #000;
+          margin: 0 auto 25px;
+          border-radius: 2px;
         }
 
-        .hero-inner {
+        .filter-bar {
           display: flex;
           justify-content: space-between;
           align-items: center;
-        }
-
-        .hero-text-box {
-          max-width: 600px;
-          z-index: 2;
-        }
-
-        .hero-title {
-          font-size: 3rem;
-          font-weight: 900;
-          color: #1a1a1a;
-          letter-spacing: -1px;
-          margin-bottom: 10px;
-        }
-
-        .hero-subtitle {
-          font-size: 1.25rem;
-          color: #666;
-          font-weight: 500;
-        }
-
-        .hero-graphic {
-          position: relative;
-          width: 300px;
-          height: 300px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .calendar-box {
-          background: #fff;
-          width: 180px;
-          height: 220px;
+          gap: 15px;
+          background: rgba(255, 255, 255, 0.2);
+          padding: 8px;
           border-radius: 12px;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-          transform: rotate(5deg);
+          backdrop-filter: blur(10px);
+          max-width: 900px;
+          margin: 0 auto;
+        }
+
+        .search-box {
+          flex: 1;
           position: relative;
-          z-index: 5;
-          overflow: hidden;
-          border: 1px solid #eee;
         }
 
-        .calendar-header {
-          background: #fbc819;
-          height: 40px;
+        .search-box input {
+          width: 100%;
+          padding: 12px 20px 12px 45px;
+          border-radius: 12px;
+          border: 1px solid rgba(0,0,0,0.1);
+          background: #fff;
+          font-weight: 600;
+          font-size: 0.95rem;
+          transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+          border-color: #000;
+        }
+
+        .search-box svg {
+          position: absolute;
+          left: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #666;
+        }
+
+        .dropdowns-row {
           display: flex;
-          align-items: center;
-          padding: 0 15px;
+          gap: 12px;
         }
 
-        .dots {
+        .filter-select {
+          position: relative;
+          min-width: 160px;
+        }
+
+        .filter-select select {
+          width: 100%;
+          appearance: none;
+          padding: 12px 40px 12px 20px;
+          border-radius: 12px;
+          border: 1px solid rgba(0,0,0,0.1);
+          background: #fff;
+          font-weight: 700;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .filter-select select:hover {
+          border-color: #000;
+        }
+
+        .filter-select svg {
+          position: absolute;
+          right: 15px;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
+          color: #666;
+        }
+
+        .results-header {
+          padding: 20px 0 5px;
+        }
+
+        .results-info {
           display: flex;
-          gap: 6px;
+          justify-content: space-between;
+          align-items: flex-end;
+          border-bottom: 2px solid rgba(0,0,0,0.05);
+          padding-bottom: 10px;
         }
 
-        .dots span {
-          width: 8px;
-          height: 8px;
-          background: rgba(255,255,255,0.4);
-          border-radius: 50%;
-        }
-
-        .calendar-body {
-          height: 180px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .new-tag {
-          font-size: 4rem;
+        .results-info h2 {
+          font-size: 1.6rem;
           font-weight: 900;
           color: #000;
-          letter-spacing: -2px;
+          text-transform: uppercase;
         }
 
-        .glow-effect {
-          position: absolute;
-          width: 200%;
-          height: 200%;
-          background: radial-gradient(circle, rgba(251, 200, 25, 0.15) 0%, transparent 70%);
-          z-index: 1;
-        }
-
-        .tabs-container {
-          background: #fff;
-          position: sticky;
-          top: 80px; /* Assuming header is sticky */
-          z-index: 100;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-          padding: 10px 0;
-        }
-
-        .tabs-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
-        .tabs-scroll {
-          flex: 1;
-          display: flex;
-          overflow-x: auto;
-          gap: 5px;
-          scrollbar-width: none;
-        }
-
-        .tabs-scroll::-webkit-scrollbar { display: none; }
-
-        .tab-item {
-          padding: 12px 25px;
-          background: transparent;
-          border: none;
-          white-space: nowrap;
-          font-weight: 700;
-          color: #666;
-          cursor: pointer;
+        .page-count {
           font-size: 0.9rem;
-          transition: all 0.3s ease;
-          border-radius: 4px;
-        }
-
-        .tab-item:hover { color: #fbc819; }
-
-        .tab-item.active {
-          background: #fbc819;
-          color: #000;
-        }
-
-        .scroll-btn {
-          width: 32px;
-          height: 32px;
-          background: #fff;
-          border: 1px solid #eee;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 50%;
-          cursor: pointer;
-          font-size: 1.2rem;
-          color: #999;
+          font-weight: 700;
+          color: #555;
         }
 
         .launchpad-content {
           margin-top: 30px;
         }
 
-        .launchpad-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-          gap: 20px;
-        }
-
-        .launch-card {
-          background: #fff;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-          transition: transform 0.3s ease;
-          display: flex;
-          flex-direction: column;
-          text-decoration: none;
-        }
-
-        .launch-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .card-img-box {
-          width: 100%;
-          aspect-ratio: 1;
-          background: #f8f8f8;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-        }
-
-        .card-img-box img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .card-info {
-          padding: 15px;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .card-name {
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: #444;
-          margin-bottom: 12px;
-          line-height: 1.4;
-          height: 40px;
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-        }
-
-        .card-price-row {
-          margin-top: auto;
-          display: flex;
-          align-items: baseline;
-          gap: 5px;
-        }
-
-        .card-price {
-          font-size: 1rem;
-          font-weight: 900;
-          color: #1a1a1a;
-        }
-
-        .card-unit {
-          font-size: 0.75rem;
-          color: #888;
-        }
-
         .bottom-nav {
-          margin-top: 60px;
+          margin-top: 50px;
           display: flex;
           justify-content: center;
         }
@@ -345,25 +365,37 @@ export default function ProductsPage() {
         .back-link-bottom {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 15px;
           color: #000;
-          background: #fbc819;
-          padding: 15px 40px;
-          font-weight: 900;
+          border: 2px solid #000;
+          padding: 12px 30px;
+          font-weight: 800;
+          font-size: 0.85rem;
           text-transform: uppercase;
-          transition: all 0.3s ease;
+          letter-spacing: 1px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 12px;
+          text-decoration: none;
         }
+
+        .back-link-bottom svg { transition: transform 0.3s ease; }
 
         .back-link-bottom:hover {
-          background: #fff;
+          background: #000;
+          color: #fbc819;
           transform: translateY(-5px);
-          box-shadow: 0 10px 30px rgba(251,200,25,0.3);
+          box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        @media (max-width: 900px) {
-          .hero-inner { flex-direction: column; text-align: center; }
-          .hero-graphic { margin-top: 40px; }
-          .hero-title { font-size: 2rem; }
+        .back-link-bottom:hover svg { transform: translateX(-5px); }
+
+        @media (max-width: 1100px) {
+          .launchpad-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 600px) {
+          .launchpad-grid { grid-template-columns: 1fr; }
+          .hero-title { font-size: 1.5rem; }
         }
       `}</style>
     </div>

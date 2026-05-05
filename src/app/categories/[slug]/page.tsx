@@ -107,7 +107,7 @@ export default function CategoryPage() {
       </section>
 
       <style jsx>{`
-        .category-page { background: #000; color: #fff; min-height: 100vh; padding-bottom: 100px; }
+        .category-page { background: transparent; color: #000; min-height: 100vh; padding-bottom: 100px; }
         .page-header { 
           background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.95)), url('/gis.png') center/cover;
           padding: 120px 0 60px; border-bottom: 2px solid #fbc819;

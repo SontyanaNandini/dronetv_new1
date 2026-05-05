@@ -185,7 +185,7 @@ const Hero = () => {
 
         .main-banner {
           height: 420px;
-          border-radius: 0;
+          border-radius: 24px;
           background-size: cover;
           background-position: center;
           position: relative;
@@ -276,7 +276,7 @@ const Hero = () => {
           font-weight: 800;
           font-size: 1rem;
           transition: all 0.3s ease;
-          border-radius: 4px;
+          border-radius: 12px;
           cursor: pointer;
           text-decoration: none;
           display: inline-flex;
@@ -331,7 +331,7 @@ const Hero = () => {
           background: #fff;
           width: 100%;
           max-width: 600px;
-          border-radius: 4px;
+          border-radius: 24px;
           overflow: hidden;
           position: relative;
           animation: modalFadeIn 0.3s ease;

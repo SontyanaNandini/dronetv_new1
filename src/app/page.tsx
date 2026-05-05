@@ -4,7 +4,39 @@ import Sidebar from "@/components/Sidebar";
 import Hero from "@/components/Hero";
 import ActionPanel from "@/components/ActionPanel";
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const Counter = ({ end, duration = 2000, suffix = "" }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTimestamp = null;
+    let animationFrameId;
+
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      setCount(Math.floor(progress * end));
+
+      if (progress < 1) {
+        animationFrameId = window.requestAnimationFrame(step);
+      } else {
+        // Pause for 3 seconds before restarting to keep it feeling 'live'
+        setTimeout(() => {
+          startTimestamp = null;
+          animationFrameId = window.requestAnimationFrame(step);
+        }, 3000);
+      }
+    };
+
+    animationFrameId = window.requestAnimationFrame(step);
+    return () => {
+      if (animationFrameId) window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [end, duration]);
+
+  return <span>{count.toLocaleString()}{suffix}</span>;
+};
 
 export default function Home() {
   const [showExhibitors, setShowExhibitors] = useState(false);
@@ -25,7 +57,7 @@ export default function Home() {
         <section className="verified-exhibitors animate-fade">
           <div className="exhibitor-banner">
             <div className="banner-info">
-              <h2>Meet the <span className="verified-badge-inline"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Verified</span> <br/>Exhibitors at the Show</h2>
+              <h2><span className="verified-badge-inline"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>Meet the Verified</span> <br/>Exhibitors at the Show</h2>
               <p>Discover the exhibitor list and trending products <br/>at 2026 April shows.</p>
               <button className="explore-btn" onClick={() => setShowExhibitors(true)}>Explore Now</button>
             </div>
@@ -520,19 +552,19 @@ export default function Home() {
 
       <section className="stats-section animate-fade">
         <div className="stat-card">
-          <strong>5,000+</strong>
+          <strong><Counter end={5000} suffix="+" /></strong>
           <span>Verified UAVs</span>
         </div>
         <div className="stat-card">
-          <strong>1,200+</strong>
+          <strong><Counter end={1200} suffix="+" /></strong>
           <span>Global Suppliers</span>
         </div>
         <div className="stat-card">
-          <strong>120</strong>
+          <strong><Counter end={120} /></strong>
           <span>Countries Served</span>
         </div>
         <div className="stat-card">
-          <strong>24/7</strong>
+          <strong><Counter end={24} suffix="/7" /></strong>
           <span>Trade Support</span>
         </div>
       </section>
@@ -562,46 +594,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="exhibition-portal layout-container">
-        <div className="exhibition-header">
-          <h2>Upcoming Global Exhibitions</h2>
-          <Link href="/ecosystem/events" className="view-more">View All Events →</Link>
-        </div>
-        <div className="exhibition-grid">
-          <div className="ex-card-wide" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000')" }}>
-            <div className="ex-overlay-dark">
-              <span className="ex-badge">October 2026</span>
-              <h3>Dubai Drone Expo 2026</h3>
-              <p>World Trade Center | International Manufacturing Hub</p>
-              <button className="register-btn">Register to Attend</button>
-            </div>
-          </div>
-          <div className="ex-card-wide" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&q=80&w=1000')" }}>
-            <div className="ex-overlay-dark">
-              <span className="ex-badge">November 2026</span>
-              <h3>Saudi Autonomous Summit</h3>
-              <p>Riyadh International | Future of Middle-East UAVs</p>
-              <button className="register-btn">Register to Attend</button>
-            </div>
-          </div>
-          <div className="ex-card-wide" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1518655061766-48c2488c9b60?auto=format&fit=crop&q=80&w=1000')" }}>
-            <div className="ex-overlay-dark">
-              <span className="ex-badge">December 2026</span>
-              <h3>Hyderabad Drone Summit</h3>
-              <p>HITEX Exhibition Center | India's Industrial Growth</p>
-              <button className="register-btn">Register to Attend</button>
-            </div>
-          </div>
-          <div className="ex-card-wide" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=1000')" }}>
-            <div className="ex-overlay-dark">
-              <span className="ex-badge">January 2027</span>
-              <h3>Bangalore Aerospace & Drone</h3>
-              <p>BIEC Bangalore | The Global Technology Hub</p>
-              <button className="register-btn">Register to Attend</button>
-            </div>
-          </div>
-        </div>
-      </section>
+
 
 
 
@@ -683,10 +676,10 @@ export default function Home() {
       </div>
 
       <style jsx>{`
-        .stats-section { display: flex; justify-content: space-around; padding: 60px 40px; background: #050505; margin-top: 40px; border: 1px solid #111; }
+        .stats-section { display: flex; justify-content: space-around; padding: 60px 40px; background: #ffffff; margin-top: 40px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
         .stat-card { text-align: center; }
-        .stat-card strong { display: block; font-size: 2.5rem; color: #fbc819; font-weight: 900; margin-bottom: 5px; }
-        .stat-card span { font-size: 0.75rem; color: #666; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+        .stat-card strong { display: block; font-size: 2.8rem; color: #fbc819; font-weight: 900; margin-bottom: 5px; text-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .stat-card span { font-size: 0.8rem; color: #444; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
 
         .product-sections { display: flex; flex-direction: column; gap: 60px; margin-top: 60px; }
         .category-section { border-bottom: 1px solid #111; padding-bottom: 50px; }
@@ -707,24 +700,16 @@ export default function Home() {
         .why-card h3 { font-size: 1.2rem; color: #fff; margin-bottom: 12px; font-weight: 800; }
         .why-card p { font-size: 0.9rem; color: #888; line-height: 1.6; }
 
-        .exhibition-portal { padding: 80px 0; border-bottom: 1px solid #111; }
-        .exhibition-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
-        .exhibition-header h2 { font-size: 2rem; font-weight: 900; color: #fff; }
-        .exhibition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-        .ex-card-wide { height: 400px; background-size: cover; background-position: center; position: relative; border: 1px solid #111; }
-        .ex-overlay-dark { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.95), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; }
-        .ex-overlay-dark h3 { font-size: 1.8rem; font-weight: 900; margin-bottom: 8px; color: #fff; }
-        .ex-overlay-dark p { color: #888; margin-bottom: 25px; font-size: 1rem; font-weight: 700; }
-        .ex-badge { background: #fbc819; color: #000; padding: 4px 12px; font-size: 0.7rem; font-weight: 900; width: fit-content; margin-bottom: 15px; }
-        .register-btn { background: #fff; color: #000; font-weight: 900; padding: 15px 30px; width: fit-content; text-transform: uppercase; font-size: 0.85rem; border: none; cursor: pointer; transition: all 0.3s ease; }
-        .register-btn:hover { background: #fbc819; transform: scale(1.05); }
+
 
 
         .verified-exhibitors {
           margin-top: 60px;
-          background: #000;
+          background: #fff;
           padding: 40px;
-          border: 1px solid #222;
+          border: 1px solid #eaeaea;
+          border-radius: 20px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
         .exhibitor-banner {
           display: flex;
@@ -733,7 +718,7 @@ export default function Home() {
         }
         .banner-info {
           flex: 1;
-          color: #fff;
+          color: #000;
         }
         .banner-info h2 {
           font-size: 2.2rem;
@@ -757,13 +742,13 @@ export default function Home() {
           filter: drop-shadow(0 1px 1px rgba(0,0,0,0.05));
         }
         .banner-info p {
-          color: #aaa;
+          color: #555;
           font-size: 1rem;
           margin-bottom: 30px;
         }
         .explore-btn {
-          background: #fff;
-          color: #000;
+          background: #000;
+          color: #fff;
           padding: 12px 30px;
           font-weight: 800;
           border-radius: 4px;
@@ -775,8 +760,8 @@ export default function Home() {
         }
         .featured-categories-outer {
           background: linear-gradient(135deg, #ffffff 0%, #fffdf0 100%); /* Brighter mix for inner box */
-          padding: 12px;
-          border-radius: 16px;
+          padding: 8px;
+          border-radius: 24px;
           box-shadow: 0 4px 20px rgba(0,0,0,0.02);
           border: 1px solid #fff9db;
         }
@@ -787,13 +772,13 @@ export default function Home() {
         }
         .cat-card-mini {
           background: linear-gradient(135deg, #fffcf0 0%, #ffffff 100%) !important;
-          height: 240px;
+          height: 180px;
           display: flex !important;
           flex-direction: column !important;
           justify-content: center !important;
           align-items: center !important;
-          padding: 12px;
-          border-radius: 12px;
+          padding: 10px;
+          border-radius: 20px;
           text-decoration: none;
           transition: all 0.3s ease;
           border: 1px solid #fef3c7 !important;
@@ -807,20 +792,20 @@ export default function Home() {
         }
         .cat-img-box {
           width: 100%;
-          height: 80px;
+          height: 60px;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
-          margin-bottom: 12px;
+          margin-bottom: 8px;
         }
         .cat-prod-img {
-          height: 100%;
-          width: auto;
-          max-width: 140px;
+          height: 60px;
+          width: 60px;
           object-fit: contain;
           transition: transform 0.3s ease;
           display: block;
-          margin: 0 auto; /* Extra insurance for centering */
+          margin: 0 auto;
+          border-radius: 12px;
         }
         .cat-info-mini {
           display: flex;
@@ -861,7 +846,7 @@ export default function Home() {
         }
         .trending-box {
           background: #fff;
-          border-radius: 8px;
+          border-radius: 20px;
           padding: 24px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.05);
           display: flex;
@@ -1023,7 +1008,7 @@ export default function Home() {
           .region-grid { grid-template-columns: 1fr; }
         }
         .featured-categories { margin-top: 20px; margin-bottom: 40px; }
-        .fc-box { background: #fff; border-radius: 8px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
+        .fc-box { background: #fff; border-radius: 16px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
         .fc-header { display: flex; align-items: baseline; gap: 20px; margin-bottom: 30px; }
         .fc-header h3 { font-size: 1.3rem; font-weight: 800; color: #1a1a1a; margin: 0; letter-spacing: -0.5px; }
         .fc-header p { font-size: 0.85rem; color: #777; margin: 0; }
@@ -1066,7 +1051,7 @@ export default function Home() {
         .kc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; padding: 0 5px; }
         .kc-header h3 { font-size: 1.4rem; font-weight: 900; color: #fbc819; margin: 0; letter-spacing: -0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         .kc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .kc-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; cursor: pointer; }
+        .kc-card { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; transition: transform 0.3s ease, box-shadow 0.3s ease; display: flex; flex-direction: column; cursor: pointer; }
         .kc-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); border-color: #e0e0e0; }
         .kc-img { width: 100%; height: 200px; background-size: cover; background-position: center; border-bottom: 1px solid #f0f0f0; }
         .kc-info { padding: 25px; display: flex; flex-direction: column; flex: 1; }
@@ -1081,7 +1066,7 @@ export default function Home() {
         .ss-header h3 { font-size: 1.4rem; font-weight: 900; color: #ffffff; margin: 0; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .ss-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         .ss-card { display: flex; flex-direction: column; gap: 15px; cursor: pointer; }
-        .ss-img-container { position: relative; border-radius: 8px; overflow: hidden; height: 180px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .ss-img-container { position: relative; border-radius: 16px; overflow: hidden; height: 180px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .ss-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
         .ss-card:hover .ss-img { transform: scale(1.05); }
         .ss-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%); display: flex; align-items: flex-end; padding: 20px; }
@@ -1103,7 +1088,7 @@ export default function Home() {
         .eb-location { background: #fff; color: #000; }
         .eb-content p { color: #ccc; font-size: 1rem; margin: 0; line-height: 1.5; font-weight: 500; }
         .eb-action { z-index: 2; margin-left: 30px; margin-right: 250px; }
-        .eb-register-btn { background: #fff; color: #1a1a1a; font-weight: 800; font-size: 1.1rem; padding: 15px 35px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
+        .eb-register-btn { background: #fff; color: #1a1a1a; font-weight: 800; font-size: 1.1rem; padding: 15px 35px; border-radius: 12px; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255,255,255,0.2); }
         .eb-register-btn:hover { background: #fbc819; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(251,200,25,0.4); }
         .eb-image-clip { position: absolute; right: 0; top: 0; bottom: 0; width: 35%; clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%); z-index: 1; }
         .eb-image-clip img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }

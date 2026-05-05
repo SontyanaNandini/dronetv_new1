@@ -60,7 +60,7 @@ const ActionPanel = () => {
           height: 45px;
           background: #fbc819;
           color: #000;
-          border-radius: 0;
+          border-radius: 16px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -81,7 +81,7 @@ const ActionPanel = () => {
           background: #fbc819;
           color: #000;
           padding: 10px;
-          border-radius: 0;
+          border-radius: 12px;
           font-weight: 700;
           font-size: 0.9rem;
         }
@@ -90,7 +90,7 @@ const ActionPanel = () => {
           background: #333;
           color: #fff;
           padding: 10px;
-          border-radius: 0;
+          border-radius: 12px;
           font-weight: 600;
           font-size: 0.9rem;
         }
@@ -108,7 +108,7 @@ const ActionPanel = () => {
           background: rgba(251, 200, 25, 0.1);
           color: #fbc819;
           padding: 10px;
-          border-radius: 0;
+          border-radius: 12px;
           font-weight: 600;
         }
 
@@ -122,7 +122,7 @@ const ActionPanel = () => {
           background: rgba(251, 200, 25, 0.1);
           color: #fbc819;
           padding: 5px 10px;
-          border-radius: 0;
+          border-radius: 12px;
           font-size: 0.75rem;
           font-weight: 700;
           height: fit-content;

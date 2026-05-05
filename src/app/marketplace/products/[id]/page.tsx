@@ -190,10 +190,28 @@ export default function ProductDetailPage() {
 
         .bottom-nav { margin-top: 60px; display: flex; justify-content: center; }
         .back-link-bottom { 
-          display: flex; align-items: center; gap: 12px; color: #000; 
-          background: #fbc819; padding: 15px 40px; font-weight: 900; 
-          text-transform: uppercase; text-decoration: none;
+          display: flex; 
+          align-items: center; 
+          gap: 15px; 
+          color: #000; 
+          border: 2px solid #000; 
+          padding: 12px 30px; 
+          font-weight: 800; 
+          font-size: 0.85rem; 
+          text-transform: uppercase; 
+          letter-spacing: 1px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 4px;
+          text-decoration: none;
         }
+        .back-link-bottom svg { transition: transform 0.3s ease; }
+        .back-link-bottom:hover { 
+          background: #000; 
+          color: #fbc819; 
+          transform: translateY(-5px); 
+          box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+        }
+        .back-link-bottom:hover svg { transform: translateX(-5px); }
 
         @media (max-width: 900px) {
           .hero-inner { grid-template-columns: 1fr; text-align: center; }

@@ -30,9 +30,9 @@ export default function RootLayout({
           <footer className="footer">
             <div className="layout-container">
               <div className="footer-grid" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr' }}>
-                <div className="footer-col">
-                  <img src="/logo.png" alt="DroneTV Logo" style={{ width: '200px', height: 'auto', marginBottom: '20px' }} />
-                  <p>Leading the digital transformation of the UAV and Geospatial industry through innovation and connectivity.</p>
+                <div className="footer-col" style={{ display: 'flex', flexDirection: 'column' }}>
+                  <img src="/logo.png" alt="DroneTV Logo" style={{ width: '200px', height: 'auto', marginBottom: '20px', marginTop: '-48px' }} />
+                  <p style={{ marginTop: '5px' }}>Leading the digital transformation of the UAV and Geospatial industry through innovation and connectivity.</p>
                 </div>
                 <div className="footer-col">
                   <h5>Marketplace</h5>

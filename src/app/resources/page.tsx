@@ -46,7 +46,7 @@ export default function ResourcesLandingPage() {
       </section>
 
       <style jsx>{`
-        .resources-landing { background: #000; color: #fff; min-height: 100vh; padding-bottom: 100px; }
+        .resources-landing { background: transparent; color: #000; min-height: 100vh; padding-bottom: 100px; }
         .page-header { 
           background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.95)), url('/gis.png') center/cover;
           padding: 80px 0 40px; border-bottom: 1px solid #222;
@@ -66,11 +66,29 @@ export default function ResourcesLandingPage() {
 
         .bottom-nav { margin-top: 80px; padding-top: 40px; border-top: 1px solid #222; display: flex; justify-content: center; }
         .back-link-bottom { 
-          display: flex; align-items: center; gap: 12px; color: #000; 
-          background: #fbc819; padding: 15px 40px; font-weight: 900; 
-          text-transform: uppercase; transition: all 0.3s ease;
+          display: flex; 
+          align-items: center; 
+          gap: 15px; 
+          color: #fbc819; 
+          border: 1px solid rgba(251, 200, 25, 0.3); 
+          padding: 12px 30px; 
+          font-weight: 800; 
+          font-size: 0.85rem; 
+          text-transform: uppercase; 
+          letter-spacing: 1px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border-radius: 4px;
+          text-decoration: none;
         }
-        .back-link-bottom:hover { background: #fff; transform: translateY(-5px); box-shadow: 0 10px 30px rgba(251,200,25,0.3); }
+        .back-link-bottom svg { transition: transform 0.3s ease; }
+        .back-link-bottom:hover { 
+          background: #fbc819; 
+          color: #000; 
+          border-color: #fbc819;
+          transform: translateY(-5px); 
+          box-shadow: 0 10px 30px rgba(251, 200, 25, 0.25); 
+        }
+        .back-link-bottom:hover svg { transform: translateX(-5px); }
 
         @media (max-width: 600px) {
           .resources-grid { grid-template-columns: 1fr; }

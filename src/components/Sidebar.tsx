@@ -88,6 +88,7 @@ const Sidebar = () => {
         .sidebar-item:hover {
           background: #f8f8f8;
           color: #fbc819;
+          border-radius: 12px;
         }
 
         .cat-title {
